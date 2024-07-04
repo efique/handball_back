@@ -16,6 +16,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    //AUTHGUARD INUTILISER, GARDER AU CAS OU LE TEMPS DETRE SUR QUE TOUT FONCTIONNE
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -26,7 +27,8 @@ export class AuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const token = request.cookies['access_token'];
+    const token = request.cookies['auth-cookie']['access_token'];
+
     if (!token) {
       throw new UnauthorizedException();
     }
@@ -34,6 +36,7 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_KEY,
       });
+
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
