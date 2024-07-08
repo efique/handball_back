@@ -13,7 +13,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
       jwtFromRequest: ExtractJwt.fromExtractors([
         JwtRefreshStrategy.extractJWTFromCookie,
       ]),
-      ignoreExpiration: true,
+      ignoreExpiration: false,
       passReqToCallback: true,
       secretOrKey: process.env.JWT_REFRESH_SECRET,
     });

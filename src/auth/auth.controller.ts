@@ -65,10 +65,7 @@ export class AuthController {
   @Get('refresh')
   @UseGuards(RefreshTokenGuard)
   @Public()
-  async refreshToken(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<void> {
+  async refreshToken(@Req() req: Request, @Res() res: Response): Promise<void> {
     try {
       const tokens = await this.authService.getTokens(
         req.user.id,
