@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from 'src/models/user.entity';
@@ -14,6 +18,10 @@ export class UsersService {
   ) {}
 
   async createUser(data: CreateUserDto) {
+    const existingUser = this.findOneUserByUsername(data.username);
+    if (existingUser) {
+      throw new BadRequestException('username already exists');
+    }
     const saltOrRounds = 10;
     const password = data.password;
     const hash = await bcrypt.hash(password, saltOrRounds);
