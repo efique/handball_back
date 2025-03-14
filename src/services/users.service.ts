@@ -15,10 +15,10 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async createUser(data: CreateUserDto) {
-    const existingUser = this.findOneUserByUsername(data.username);
+    const existingUser = await this.findOneUserByUsername(data.username, true);
     if (existingUser) {
       throw new BadRequestException('username already exists');
     }
@@ -44,12 +44,15 @@ export class UsersService {
     }
   }
 
-  async findOneUserByUsername(username: string): Promise<User | undefined> {
+  async findOneUserByUsername(username: string, firstadmin = false): Promise<User | undefined> {
     const user = await this.userRepository.findOne({
       where: { username: username },
     });
 
-    if (!user) {
+    if (!user && firstadmin) {
+      return undefined;
+    }
+    else if (!user) {
       throw new NotFoundException('User not found');
     } else {
       return await user;

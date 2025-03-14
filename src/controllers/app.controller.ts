@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Req, Res } from '@nestjs/common';
 import { AppService } from '../services/app.service';
 import { Request, Response } from 'express';
 import { Public } from 'src/decorators/publicdecorator';
@@ -7,7 +7,7 @@ import { RoleAppEnum } from 'src/models/user.entity';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private readonly usersService: UsersService) {}
+  constructor(private readonly appService: AppService, private readonly usersService: UsersService) { }
 
   @Get()
   getHello(): string {
@@ -16,8 +16,9 @@ export class AppController {
 
   @Get('firstadmin')
   @Public()
-  getFirstAdmin(@Req() req: Request) {
-    this.usersService.createUser({username: 'admin', password: 'admin', role: RoleAppEnum.ADMIN});
-    return req.user;
+  async getFirstAdmin(@Res({ passthrough: true }) res: Response) {
+    const user = await this.usersService.createUser({ username: process.env.ADMIN_USERNAME, password: process.env.ADMIN_PASSWORD, role: RoleAppEnum.ADMIN });
+    res.status(HttpStatus.CREATED);
+    return user;
   }
 }

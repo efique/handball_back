@@ -5,7 +5,7 @@ import { PlayersToTeamsService } from 'src/services/playerstoteam.service';
 
 @Controller('playerstoteams')
 export class PlayersToTeamsController {
-  constructor(private readonly playersToTeamsService: PlayersToTeamsService) {}
+  constructor(private readonly playersToTeamsService: PlayersToTeamsService) { }
 
   @Post()
   async createPlayerToTeam(@Body() data: CreatePlayerToTeamDto) {

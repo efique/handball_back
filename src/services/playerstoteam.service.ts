@@ -18,7 +18,7 @@ export class PlayersToTeamsService {
     private readonly playersService: PlayersService,
     private readonly teamsService: TeamsService,
     private readonly seasonsService: SeasonsService,
-  ) {}
+  ) { }
 
   async createPlayerToTeam(playerToTeam: PlayerToTeam, data) {
     const player = await this.playersService.findOnePlayer(data.player_id);
@@ -27,8 +27,8 @@ export class PlayersToTeamsService {
 
     const playerFromTeam = await this.playersService.findOnePlayerByTeam({
       id: data.player_id,
-      team_id: data.team_id,
-    });
+      team_id: data.team_id
+    }, true);
 
     if (!player || !team || !season) {
       throw new NotFoundException();

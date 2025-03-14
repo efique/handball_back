@@ -10,7 +10,7 @@ export class PlayersService {
   constructor(
     @InjectRepository(Player)
     private playerRepository: Repository<Player>,
-  ) {}
+  ) { }
 
   async createPlayer(data: CreatePlayerDto) {
     return await this.playerRepository.save(data);
@@ -30,7 +30,7 @@ export class PlayersService {
     }
   }
 
-  async findOnePlayerByTeam(data) {
+  async findOnePlayerByTeam(data, toCreate = false) {
     const player = await this.playerRepository.find({
       where: {
         id: data.id,
@@ -40,8 +40,8 @@ export class PlayersService {
       },
     });
 
-    if (!player || !player.length) {
-      throw new NotFoundException('Player not found');
+    if ((!player || !player.length) && !toCreate) {
+      throw new NotFoundException('Player not linked with this team');
     } else {
       return await player;
     }
