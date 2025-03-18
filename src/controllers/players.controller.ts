@@ -7,14 +7,16 @@ import {
   Delete,
   Put,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { PlayersService } from '../services/players.service';
 import { CreatePlayerDto } from '../dto/create-player.dto';
 import { UpdatePlayerDto } from '../dto/update-player.dto';
+import { PaginationDto } from '../dto/pagination.dto';
 
 @Controller('players')
 export class PlayersController {
-  constructor(private readonly playersService: PlayersService) {}
+  constructor(private readonly playersService: PlayersService) { }
 
   @Get('team')
   findOnePlayerByTeam(@Body() data) {
@@ -27,8 +29,8 @@ export class PlayersController {
   }
 
   @Get()
-  findAllPlayers() {
-    return this.playersService.findAllPlayers();
+  async findAllPlayers(@Query() paginationDto: PaginationDto) {
+    return this.playersService.findAllPlayers(paginationDto);
   }
 
   @Get(':id')

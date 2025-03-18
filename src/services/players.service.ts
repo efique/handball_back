@@ -4,6 +4,7 @@ import { UpdatePlayerDto } from '../dto/update-player.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Player } from 'src/models/player.entity';
 import { Repository } from 'typeorm';
+import { PaginationDto } from 'src/dto/pagination.dto';
 
 @Injectable()
 export class PlayersService {
@@ -16,8 +17,18 @@ export class PlayersService {
     return await this.playerRepository.save(data);
   }
 
-  async findAllPlayers() {
-    return await this.playerRepository.find();
+  async findAllPlayers(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
+    const [players, total] = await this.playerRepository.findAndCount({
+      take: limit,
+      skip: offset,
+    });
+
+    return {
+      data: players,
+      count: total,
+    };
   }
 
   async findOnePlayer(id: number) {
